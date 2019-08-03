@@ -6,7 +6,10 @@ const serverless = require(`serverless-http`);
 
 require(`./utils/auth`);
 
-const { COOKIE_SECURE } = require(`./utils/config`);
+const {
+  COOKIE_SECURE,
+  ENDPOINT,
+} = require(`./utils/config`);
 
 const app = express();
 
@@ -21,15 +24,15 @@ const handleCallback = () => (req, res) => {
     .redirect(`/`);
 };
 
-app.get(`/.netlify/functions/auth/github`, passport.authenticate(`github`, { session: false }));
+app.get(`${ENDPOINT}/auth/github`, passport.authenticate(`github`, { session: false }));
 app.get(
-  `/.netlify/functions/auth/github/callback`,
+  `${ENDPOINT}/auth/github/callback`,
   passport.authenticate(`github`, { failureRedirect: `/`, session: false }),
   handleCallback(),
 );
 
 app.get(
-  `/.netlify/functions/auth/status`,
+  `${ENDPOINT}/auth/status`,
   passport.authenticate(`jwt`, { session: false }),
   (req, res) => res.json({ email: req.user.email }),
 );

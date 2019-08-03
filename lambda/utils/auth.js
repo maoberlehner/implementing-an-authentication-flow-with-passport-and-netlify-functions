@@ -5,6 +5,7 @@ const passportJwt = require(`passport-jwt`);
 
 const {
   BASE_URL,
+  ENDPOINT,
   GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET,
   SECRET,
@@ -19,7 +20,7 @@ passport.use(
     {
       clientID: GITHUB_CLIENT_ID,
       clientSecret: GITHUB_CLIENT_SECRET,
-      callbackURL: `${BASE_URL}/auth/github/callback`,
+      callbackURL: `${BASE_URL}${ENDPOINT}/auth/github/callback`,
       scope: [`user:email`],
     },
     async (accessToken, refreshToken, profile, done) => {

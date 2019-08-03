@@ -12,7 +12,7 @@
         <small>(Clear your cookies if you want to try again.)</small>
       </template>
       <template v-else>
-        <a href="/.netlify/functions/auth/github">
+        <a :href="`${endpoint}/auth/github`">
           Please log in
         </a>
       </template>
@@ -45,7 +45,11 @@ export default {
     };
   },
   async created() {
-    const status = await quickFetch(`/.netlify/functions/auth/status`);
+    this.endpoint = process.env.NODE_ENV === `development`
+      ? `/.netlify/functions`
+      : `/api`;
+
+    const status = await quickFetch(`${this.endpoint}/auth/status`);
     this.user = status.email;
   },
 };
