@@ -6,12 +6,48 @@
     <h1>
       Implementing an Authentication Flow with Passport and Netlify Functions
     </h1>
+    <p>
+      <template v-if="user">
+        Hello {{ user }}!<br>
+        <small>(Clear your cookies if you want to try again.)</small>
+      </template>
+      <template v-else>
+        <a href="/.netlify/functions/auth/github">
+          Please log in
+        </a>
+      </template>
+    </p>
   </div>
 </template>
 
 <script>
+async function quickFetch(endpoint) {
+  let data;
+  try {
+    const response = await fetch(endpoint, {
+      credentials: `include`,
+      headers: {
+        'Content-Type': `application/json`,
+      },
+    });
+    data = await response.json();
+  } catch (error) {
+    data = { error };
+  }
+  return data;
+}
+
 export default {
   name: `App`,
+  data() {
+    return {
+      user: false,
+    };
+  },
+  async created() {
+    const status = await quickFetch(`/.netlify/functions/auth/status`);
+    this.user = status.email;
+  },
 };
 </script>
 
@@ -33,9 +69,6 @@ export default {
 .main {
   padding-top: setting-spacing(xl);
   padding-bottom: setting-spacing(xl);
-
-  h1 {
-    text-align: center;
-  }
+  text-align: center;
 }
 </style>
